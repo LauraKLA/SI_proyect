@@ -12,7 +12,7 @@ pool:
 stages:
 - stage: Build
   displayName: Build stage
-  jobs:  
+  jobs:
   - job: Build
     displayName: Build
     steps:
@@ -43,3 +43,23 @@ stages:
 
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
+
+- stage: Deploy
+  displayName: Deploy stage
+  jobs:
+  - deployment: VMDeploy
+    displayName: Web deploy
+    environment:
+      name: Ambiente1
+      resourceType: VirtualMachine
+      tags: web1 # Update or remove value to match your tag
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+          - script: |
+              echo "Deploying to Virtual Machine"
+              # Add your deployment script here
+            displayName: 'Deploy to VM'
