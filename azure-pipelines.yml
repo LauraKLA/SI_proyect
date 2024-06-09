@@ -52,7 +52,7 @@ stages:
     environment:
       name: Ambiente1
       resourceType: VirtualMachine
-      tags: LAURA # Update or remove value to match your tag
+      tags: web1 # Update or remove value to match your tag
     strategy:
       runOnce:
         deploy:
