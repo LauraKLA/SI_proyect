@@ -1,5 +1,4 @@
 trigger:
-
 - main
 
 pool:
@@ -36,20 +35,27 @@ stages:
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
-    - task: VSTest@2
+  
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+
+  - job: ParallelTesting
+    displayName: Test
+    strategy:
+      parallel: 2
+    steps:
+    - checkout: self
+      displayName: 'Checkout source code'
+      
+    - task: VSTest@2 
       inputs:
         testSelector: 'testAssemblies'
         testAssemblyVer2: |
-          **\bin\**\*test.dll
-          **\bin\**\*tests.dll
+          *\bin\*\*test.dll
+          *\bin\*\*tests.dll
         searchFolder: '$(System.DefaultWorkingDirectory)'
         runTestsInIsolation: true
-        codeCoverageEnabled: true    
-
-
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      artifact: drop
-      
+        codeCoverageEnabled: true
 
 - stage: Deploy
   displayName: Deploy stage
