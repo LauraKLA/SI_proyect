@@ -1,4 +1,5 @@
 trigger:
+
 - main
 
 pool:
@@ -35,9 +36,20 @@ stages:
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          **\bin\**\*test.dll
+          **\bin\**\*tests.dll
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        runTestsInIsolation: true
+        codeCoverageEnabled: true    
+
 
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
+      
 
 - stage: Deploy
   displayName: Deploy stage
