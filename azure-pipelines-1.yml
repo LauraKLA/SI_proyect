@@ -54,16 +54,6 @@ stages:
     - checkout: self
       displayName: 'Checkout source code'
 
-    - task: DownloadBuildArtifacts@0
-      displayName: 'Download Build Artifacts'
-      inputs:
-        buildType: 'specific'
-        project: '$(System.TeamProject)'
-        definition: '25'  
-        buildId: $(Build.BuildId)
-        downloadType: 'single'
-        artifactName: 'drop'
-        downloadPath: '$(System.DefaultWorkingDirectory)'
 
     - task: VSTest@2
       displayName: 'Run Tests'
