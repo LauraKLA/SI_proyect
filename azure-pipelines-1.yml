@@ -45,6 +45,7 @@ stages:
 
 - stage: ParallelTesting
   displayName: Parallel Testing stage
+  dependsOn: Build
   jobs:
   - job: ParallelTesting
     strategy:
@@ -58,8 +59,8 @@ stages:
       inputs:
         buildType: 'specific'
         project: '$(System.TeamProject)'
-        definition: '25' 
-        buildId: $(Build.BuildId)  
+        definition: '42'  # Reemplaza con el ID correcto de la definición de construcción
+        buildId: $(Build.BuildId)  # Utiliza la variable de la construcción actual
         downloadType: 'single'
         artifactName: 'drop'
         downloadPath: '$(System.DefaultWorkingDirectory)'
@@ -76,6 +77,7 @@ stages:
 
 - stage: Deploy
   displayName: Deploy stage
+  dependsOn: ParallelTesting
   jobs:
   - deployment: VMDeploy
     displayName: Web deploy
