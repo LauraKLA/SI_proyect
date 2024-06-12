@@ -58,7 +58,7 @@ stages:
       inputs:
         buildType: 'specific'
         project: '$(System.TeamProject)'
-        definition: 'Build' 
+        definition: '25' 
         buildId: $(Build.BuildId)  
         downloadType: 'single'
         artifactName: 'drop'
