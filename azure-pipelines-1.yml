@@ -59,8 +59,8 @@ stages:
       inputs:
         buildType: 'specific'
         project: '$(System.TeamProject)'
-        definition: '42'  # Reemplaza con el ID correcto de la definición de construcción
-        buildId: $(Build.BuildId)  # Utiliza la variable de la construcción actual
+        definition: '25' 
+        buildId: $(Build.BuildId) 
         downloadType: 'single'
         artifactName: 'drop'
         downloadPath: '$(System.DefaultWorkingDirectory)'
