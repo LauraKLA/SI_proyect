@@ -37,6 +37,13 @@ stages:
         archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
         replaceExistingArchive: true
 
+  - job: ParallelTesting
+    strategy:
+      parallel: 2
+    steps:
+    - checkout: self
+      displayName: 'Checkout source code'
+
     - task: VSTest@2
       inputs:
         testSelector: 'testAssemblies'
@@ -45,3 +52,34 @@ stages:
          **\bin\**\*tests.dll
          searchFolder: '$(System.DefaultWorkingDirectory)'
           distributionBatchType: 'basedOnExecutionTime'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+- stage: Deploy
+  displayName: Deploy stage
+  jobs:
+  - deployment: VMDeploy
+    displayName: Web deploy
+    environment:
+      name: Ambiente1
+      resourceType: VirtualMachine
+      tags: web1
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+          - script: |
+              echo "Deploying to Virtual Machine"
+            displayName: 'Deploy to VM'
